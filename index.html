@@ -6,94 +6,114 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
       background-color: #f5f5f5;
-    }
-    h1 {
       text-align: center;
-      margin-top: 20px;
-      color: #333;
+      padding-top: 20px;
+      margin: 0;
     }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
     .video-container {
       display: flex;
       justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 30px;
       flex-wrap: wrap;
+      padding: 20px;
     }
+
+    .video-block {
+      position: relative;
+      display: inline-block;
+    }
+
     video {
-      max-width: 45%;
+      max-width: 100%;
+      width: 400px;
       height: auto;
       border: 2px solid #ccc;
       border-radius: 8px;
     }
-    .buttons {
-      margin-top: 20px;
-    }
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 5px;
+
+    .audio-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 6px 12px;
       background-color: #007bff;
       color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
       cursor: pointer;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
     }
-    button:hover {
-      background-color: #0056b3;
+
+    .audio-button:hover {
+      opacity: 0.9;
+    }
+
+    #btnFr {
+      background-color: #007bff; /* bleu */
+    }
+
+    #btnTraduite {
+      background-color: #28a745; /* vert */
+    }
+
+    @media screen and (max-width: 900px) {
+      .video-container {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
+
   <h1>Français traduit en 9 langues via l'IA</h1>
 
-  <div class="buttons">
-    <button onclick="togglePlay()">Lecture / Pause synchronisées</button>
-  </div>
-
   <div class="video-container">
-    <video id="videoTraduite" controls muted>
-      <source src="video-traduite.mp4" type="video/mp4">
-      Votre navigateur ne prend pas en charge la vidéo.
-    </video>
+    <div class="video-block">
+      <button id="btnTraduite" class="audio-button" onclick="playWithAudio('videoTraduite')">🌍 Traduit</button>
+      <video id="videoTraduite" muted>
+        <source src="video-traduite.mp4" type="video/mp4">
+        Votre navigateur ne supporte pas la vidéo.
+      </video>
+    </div>
 
-    <video id="videoFr" controls muted>
-      <source src="video-fr.mp4" type="video/mp4">
-      Votre navigateur ne prend pas en charge la vidéo.
-    </video>
-  </div>
-
-  <div class="buttons">
-    <button onclick="toggleAudio('videoTraduite')">Activer audio vidéo traduite</button>
-    <button onclick="toggleAudio('videoFr')">Activer audio vidéo française</button>
+    <div class="video-block">
+      <button id="btnFr" class="audio-button" onclick="playWithAudio('videoFr')">🇫🇷 Français</button>
+      <video id="videoFr" muted>
+        <source src="video-fr.mp4" type="video/mp4">
+        Votre navigateur ne supporte pas la vidéo.
+      </video>
+    </div>
   </div>
 
   <script>
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    function toggleAudio(id) {
-      const selected = document.getElementById(id);
-      const other = id === 'videoFr' ? videoTraduite : videoFr;
+    function playWithAudio(targetId) {
+      const target = document.getElementById(targetId);
+      const other = targetId === 'videoFr' ? videoTraduite : videoFr;
 
-      selected.muted = false;
+      target.muted = false;
       other.muted = true;
+
+      target.play();
+      other.play();
     }
 
-    function togglePlay() {
-      if (videoFr.paused || videoTraduite.paused) {
-        videoFr.play();
-        videoTraduite.play();
-      } else {
-        videoFr.pause();
-        videoTraduite.pause();
-      }
-    }
-
-    // Par défaut : seule la vidéo traduite est audible
+    // Par défaut : seule la vidéo traduite a le son
     videoTraduite.muted = false;
     videoFr.muted = true;
   </script>
+
 </body>
 </html>

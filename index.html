@@ -60,6 +60,21 @@
         flex-direction: column;
         align-items: center;
       }
+
+      .video-block {
+        width: 100%;
+        max-width: 95vw;
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+      }
+
+      .audio-label {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
     }
   </style>
 </head>
@@ -92,28 +107,32 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    function handlePlay(clickedVideo, otherVideo) {
+    // Quand l’utilisateur clique sur une vidéo, on synchronise la lecture
+    function initSync(clicked, other) {
       // Activer le son sur la vidéo cliquée
-      clickedVideo.muted = false;
-      // Couper le son sur l'autre
-      otherVideo.muted = true;
+      clicked.muted = false;
+      // Désactiver le son sur l'autre
+      other.muted = true;
 
-      // Lancer l'autre vidéo si elle n’est pas en lecture
-      if (otherVideo.paused) {
-        otherVideo.play();
-      }
+      // Lancer les deux vidéos
+      clicked.play();
+      other.play();
     }
 
-    videoTraduite.addEventListener('play', () => handlePlay(videoTraduite, videoFr));
-    videoFr.addEventListener('play', () => handlePlay(videoFr, videoTraduite));
+    // Synchroniser les pauses
+    function syncPause(source, target) {
+      source.addEventListener('pause', () => {
+        if (!target.paused) target.pause();
+      });
+    }
 
-    videoTraduite.addEventListener('pause', () => {
-      if (!videoFr.paused) videoFr.pause();
-    });
+    // Détecter un clic utilisateur sur chaque vidéo (et non juste play auto)
+    videoFr.addEventListener('click', () => initSync(videoFr, videoTraduite));
+    videoTraduite.addEventListener('click', () => initSync(videoTraduite, videoFr));
 
-    videoFr.addEventListener('pause', () => {
-      if (!videoTraduite.paused) videoTraduite.pause();
-    });
+    // Synchronisation des pauses
+    syncPause(videoFr, videoTraduite);
+    syncPause(videoTraduite, videoFr);
 
     // État initial : seul la vidéo traduite est audible
     videoFr.muted = true;

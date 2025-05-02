@@ -8,61 +8,64 @@
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
       text-align: center;
-      padding-top: 20px;
       margin: 0;
+      padding: 20px;
     }
 
     h1 {
       color: #333;
-      margin-bottom: 30px;
-      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      color: #555;
+      font-size: 16px;
+      max-width: 700px;
+      margin: 0 auto 30px;
     }
 
     .video-container {
       display: flex;
       justify-content: center;
-      gap: 30px;
+      gap: 40px;
       flex-wrap: wrap;
-      padding: 20px;
     }
 
     .video-block {
       position: relative;
-      display: inline-block;
+      background-color: #e0f0ff;
+      border: 3px solid #007bff;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .video-block.traduite {
+      background-color: #e6ffea;
+      border-color: #28a745;
     }
 
     video {
-      max-width: 100%;
       width: 400px;
       height: auto;
-      border: 2px solid #ccc;
-      border-radius: 8px;
+      border-radius: 6px;
     }
 
     .audio-button {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      padding: 6px 12px;
-      background-color: #007bff;
-      color: white;
+      margin-top: 10px;
+      padding: 8px 14px;
+      font-size: 14px;
       border: none;
       border-radius: 4px;
-      font-size: 14px;
       cursor: pointer;
-      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+      color: white;
     }
 
-    .audio-button:hover {
-      opacity: 0.9;
+    .btn-fr {
+      background-color: #007bff;
     }
 
-    #btnFr {
-      background-color: #007bff; /* bleu */
-    }
-
-    #btnTraduite {
-      background-color: #28a745; /* vert */
+    .btn-traduite {
+      background-color: #28a745;
     }
 
     @media screen and (max-width: 900px) {
@@ -76,22 +79,25 @@
 <body>
 
   <h1>Français traduit en 9 langues via l'IA</h1>
+  <div class="description">
+    Cliquez sur un des boutons pour écouter l'une des versions. Les deux vidéos démarrent ensemble, mais une seule aura le son.
+  </div>
 
   <div class="video-container">
-    <div class="video-block">
-      <button id="btnTraduite" class="audio-button" onclick="playWithAudio('videoTraduite')">🌍 Traduit</button>
-      <video id="videoTraduite" muted>
+    <div class="video-block traduite">
+      <video id="videoTraduite" controls muted>
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
+      <button class="audio-button btn-traduite" onclick="playWithAudio('videoTraduite')">🌍 Écouter la version traduite</button>
     </div>
 
     <div class="video-block">
-      <button id="btnFr" class="audio-button" onclick="playWithAudio('videoFr')">🇫🇷 Français</button>
-      <video id="videoFr" muted>
+      <video id="videoFr" controls muted>
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
+      <button class="audio-button btn-fr" onclick="playWithAudio('videoFr')">🇫🇷 Écouter la version française</button>
     </div>
   </div>
 
@@ -110,9 +116,9 @@
       other.play();
     }
 
-    // Par défaut : seule la vidéo traduite a le son
-    videoTraduite.muted = false;
+    // Par défaut, seule la vidéo traduite est audible
     videoFr.muted = true;
+    videoTraduite.muted = false;
   </script>
 
 </body>

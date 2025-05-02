@@ -41,7 +41,7 @@
       border-radius: 6px;
     }
 
-    .audio-button {
+    .audio-label {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -51,12 +51,8 @@
       background-color: rgba(0,0,0,0.6);
       color: #fff;
       border-radius: 4px;
-      cursor: pointer;
+      pointer-events: none; /* désactive l'interaction */
       z-index: 10;
-    }
-
-    .audio-button:hover {
-      background-color: rgba(0,0,0,0.8);
     }
 
     @media screen and (max-width: 900px) {
@@ -71,21 +67,21 @@
 
   <h1>Français traduit en 9 langues via l'IA</h1>
   <div class="description">
-    Cliquez sur un bouton pour écouter une version. Les deux vidéos sont synchronisées, une seule aura le son.
+    Cliquez sur l’une des vidéos pour lancer les deux. Seule la version choisie aura le son.
   </div>
 
   <div class="video-container">
     <div class="video-block">
-      <button class="audio-button" onclick="togglePlayback('videoTraduite')">🌍 Traduit</button>
-      <video id="videoTraduite" controls playsinline>
+      <div class="audio-label">🌍 Traduit</div>
+      <video id="videoTraduite" controls playsinline muted>
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
     </div>
 
     <div class="video-block">
-      <button class="audio-button" onclick="togglePlayback('videoFr')">🇫🇷 Français</button>
-      <video id="videoFr" controls playsinline>
+      <div class="audio-label">🇫🇷 Français</div>
+      <video id="videoFr" controls playsinline muted>
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -96,26 +92,35 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    let playing = null;
+    function synchronizePlayback(clicked, other) {
+      // Activer le son sur la vidéo cliquée, muter l'autre
+      clicked.muted = false;
+      other.muted = true;
 
-    function togglePlayback(targetId) {
-      const target = document.getElementById(targetId);
-      const other = (targetId === 'videoFr') ? videoTraduite : videoFr;
-
-      // Si déjà en lecture avec ce bouton → mettre en pause
-      if (playing === targetId && !target.paused) {
-        target.pause();
-        other.pause();
-        playing = null;
-      } else {
-        // Lancer les deux, activer le son pour la bonne
-        target.muted = false;
-        other.muted = true;
-        target.play();
+      // Si la vidéo cliquée est en lecture, lancer l'autre aussi
+      if (!clicked.paused) {
         other.play();
-        playing = targetId;
+      } else {
+        other.pause();
       }
     }
+
+    // Quand l'utilisateur joue une des vidéos
+    videoFr.addEventListener('play', () => synchronizePlayback(videoFr, videoTraduite));
+    videoTraduite.addEventListener('play', () => synchronizePlayback(videoTraduite, videoFr));
+
+    // Quand l'utilisateur met pause
+    videoFr.addEventListener('pause', () => {
+      if (!videoTraduite.paused) videoTraduite.pause();
+    });
+
+    videoTraduite.addEventListener('pause', () => {
+      if (!videoFr.paused) videoFr.pause();
+    });
+
+    // Par défaut, seul "traduite" a le son
+    videoFr.muted = true;
+    videoTraduite.muted = false;
   </script>
 
 </body>

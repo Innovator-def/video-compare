@@ -52,6 +52,7 @@
       color: #fff;
       border-radius: 4px;
       cursor: pointer;
+      z-index: 10;
     }
 
     .audio-button:hover {
@@ -76,7 +77,7 @@
   <div class="video-container">
     <div class="video-block">
       <button class="audio-button" onclick="togglePlayback('videoTraduite')">🌍 Traduit</button>
-      <video id="videoTraduite" muted>
+      <video id="videoTraduite" controls playsinline>
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -84,7 +85,7 @@
 
     <div class="video-block">
       <button class="audio-button" onclick="togglePlayback('videoFr')">🇫🇷 Français</button>
-      <video id="videoFr" muted>
+      <video id="videoFr" controls playsinline>
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -95,23 +96,19 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    let playing = null; // peut valoir 'videoFr', 'videoTraduite' ou null
+    let playing = null;
 
     function togglePlayback(targetId) {
       const target = document.getElementById(targetId);
-      const other = targetId === 'videoFr' ? videoTraduite : videoFr;
+      const other = (targetId === 'videoFr') ? videoTraduite : videoFr;
 
-      if (playing === targetId) {
-        // stop both
+      // Si déjà en lecture avec ce bouton → mettre en pause
+      if (playing === targetId && !target.paused) {
         target.pause();
         other.pause();
-        target.currentTime = 0;
-        other.currentTime = 0;
-        target.muted = true;
-        other.muted = true;
         playing = null;
       } else {
-        // launch both
+        // Lancer les deux, activer le son pour la bonne
         target.muted = false;
         other.muted = true;
         target.play();

@@ -66,11 +66,6 @@
         max-width: 95vw;
       }
 
-      video {
-        width: 100%;
-        height: auto;
-      }
-
       .audio-label {
         font-size: 12px;
         padding: 4px 8px;
@@ -104,40 +99,50 @@
   </div>
 
   <script>
-    const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
+    const videoFr = document.getElementById('videoFr');
 
-    // Quand l’utilisateur clique sur une vidéo, on synchronise la lecture
-    function initSync(clicked, other) {
-      // Activer le son sur la vidéo cliquée
+    let activeVideo = null;
+
+    function syncPlayback(clicked, other) {
+      // Son sur la vidéo cliquée, silence sur l'autre
       clicked.muted = false;
-      // Désactiver le son sur l'autre
       other.muted = true;
 
-      // Lancer les deux vidéos
-      clicked.play();
-      other.play();
+      // Synchroniser le temps si écart > 0.1s
+      const delta = Math.abs(clicked.currentTime - other.currentTime);
+      if (delta > 0.1) {
+        other.currentTime = clicked.currentTime;
+      }
+
+      // Lancer les deux vidéos si ce n’est pas déjà fait
+      if (clicked.paused) clicked.play();
+      if (other.paused) other.play();
+
+      activeVideo = clicked;
     }
 
-    // Synchroniser les pauses
-    function syncPause(source, target) {
-      source.addEventListener('pause', () => {
-        if (!target.paused) target.pause();
-      });
-    }
+    videoTraduite.addEventListener('play', () => {
+      if (activeVideo !== videoTraduite) {
+        syncPlayback(videoTraduite, videoFr);
+      }
+    });
 
-    // Détecter un clic utilisateur sur chaque vidéo (et non juste play auto)
-    videoFr.addEventListener('click', () => initSync(videoFr, videoTraduite));
-    videoTraduite.addEventListener('click', () => initSync(videoTraduite, videoFr));
+    videoFr.addEventListener('play', () => {
+      if (activeVideo !== videoFr) {
+        syncPlayback(videoFr, videoTraduite);
+      }
+    });
 
-    // Synchronisation des pauses
-    syncPause(videoFr, videoTraduite);
-    syncPause(videoTraduite, videoFr);
+    // Pause synchronisée
+    videoTraduite.addEventListener('pause', () => {
+      if (!videoFr.paused) videoFr.pause();
+    });
 
-    // État initial : seul la vidéo traduite est audible
+    videoFr.addEventListener('pause', () => {
+      if (!videoTraduite.paused) videoTraduite.pause();
+    });
+
+    // Initial: seule la vidéo traduite est audible
     videoFr.muted = true;
-    videoTraduite.muted = false;
-  </script>
-
-</body>
-</html>
+    vide

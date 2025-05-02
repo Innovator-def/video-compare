@@ -132,13 +132,14 @@
       if (!videoFr.paused) videoFr.pause();
     });
 
-    videoFr.addEventListener("pause", () => {
-      if (!videoTraduite.paused) videoTraduite.pause();
-    });
+    // Supprimer cet événement pour permettre à la vidéo traduite de continuer
+    // videoFr.addEventListener("pause", () => {
+    //   if (!videoTraduite.paused) videoTraduite.pause();
+    // });
 
     // Ne pas relancer la vidéo française une fois terminée
     videoFr.addEventListener("ended", () => {
-      // Elle reste arrêtée
+      // Elle reste arrêtée, pas besoin de stopper la vidéo traduite
     });
 
     // Forcer le son unique même si l'utilisateur tente de réactiver l'autre piste

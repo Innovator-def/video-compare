@@ -1,75 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Comparaison vidéos</title>
+  <meta charset="UTF-8">
+  <title>Français traduit en 9 langues via l'IA</title>
   <style>
     body {
-      font-family: sans-serif;
-      margin: 20px;
-      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      color: #333;
     }
     .video-container {
       display: flex;
-      gap: 10px;
       justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+      flex-wrap: wrap;
     }
     video {
-      width: 45%;
+      max-width: 45%;
       height: auto;
       border: 2px solid #ccc;
+      border-radius: 8px;
     }
-    .controls {
-      text-align: center;
+    .buttons {
       margin-top: 20px;
     }
     button {
+      margin: 10px;
       padding: 10px 20px;
-      margin: 0 10px;
       font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
       cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
   <h1>Français traduit en 9 langues via l'IA</h1>
+
   <div class="video-container">
-    <video id="videoFr" src="video-fr.mp4" controls></video>
-    <video id="videoTrad" src="video-traduite.mp4" controls muted></video>
+    <video id="videoTraduite" controls>
+      <source src="video-traduite.mp4" type="video/mp4">
+      Votre navigateur ne prend pas en charge la vidéo.
+    </video>
+
+    <video id="videoFr" controls>
+      <source src="video-fr.mp4" type="video/mp4">
+      Votre navigateur ne prend pas en charge la vidéo.
+    </video>
   </div>
 
-  <div class="controls">
-    <button onclick="audioFr()">🔊 Activer audio français</button>
-    <button onclick="audioTrad()">🌍 Activer audio traduction</button>
+  <div class="buttons">
+    <button onclick="toggleAudio('videoTraduite')">Activer audio vidéo traduite</button>
+    <button onclick="toggleAudio('videoFr')">Activer audio vidéo française</button>
   </div>
 
   <script>
-    const videoFr = document.getElementById('videoFr');
-    const videoTrad = document.getElementById('videoTrad');
+    function toggleAudio(id) {
+      const video = document.getElementById(id);
+      const other = id === 'videoTraduite' ? document.getElementById('videoFr') : document.getElementById('videoTraduite');
 
-    // Synchroniser lecture/pause
-    function syncPlayPause(source, target) {
-      source.addEventListener('play', () => target.play());
-      source.addEventListener('pause', () => target.pause());
-      source.addEventListener('seeked', () => {
-        target.currentTime = source.currentTime;
-      });
+      video.muted = false;
+      other.muted = true;
     }
 
-    syncPlayPause(videoFr, videoTrad);
-    syncPlayPause(videoTrad, videoFr);
-
-    // Audio toggle
-    function audioFr() {
-      videoFr.muted = false;
-      videoTrad.muted = true;
-    }
-
-    function audioTrad() {
-      videoFr.muted = true;
-      videoTrad.muted = false;
-    }
+    // Par défaut, seule la vidéo traduite est activée
+    document.getElementById('videoTraduite').muted = false;
+    document.getElementById('videoFr').muted = true;
   </script>
 </body>
 </html>

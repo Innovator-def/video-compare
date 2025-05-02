@@ -92,33 +92,34 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    function synchronizePlayback(clicked, other) {
-      // Activer le son sur la vidéo cliquée, muter l'autre
+    function synchronizePlayback(clicked, clickedId) {
+      const isTrad = clickedId === 'videoTraduite';
+      const other = isTrad ? videoFr : videoTraduite;
+
+      // Met le son sur la vidéo cliquée, coupe l’autre
       clicked.muted = false;
       other.muted = true;
 
-      // Si la vidéo cliquée est en lecture, lancer l'autre aussi
-      if (!clicked.paused) {
+      // Lance l’autre vidéo si elle n’est pas déjà en lecture
+      if (!clicked.paused && other.paused) {
         other.play();
-      } else {
+      } else if (clicked.paused && !other.paused) {
         other.pause();
       }
     }
 
-    // Quand l'utilisateur joue une des vidéos
-    videoFr.addEventListener('play', () => synchronizePlayback(videoFr, videoTraduite));
-    videoTraduite.addEventListener('play', () => synchronizePlayback(videoTraduite, videoFr));
-
-    // Quand l'utilisateur met pause
-    videoFr.addEventListener('pause', () => {
-      if (!videoTraduite.paused) videoTraduite.pause();
-    });
+    videoTraduite.addEventListener('play', () => synchronizePlayback(videoTraduite, 'videoTraduite'));
+    videoFr.addEventListener('play', () => synchronizePlayback(videoFr, 'videoFr'));
 
     videoTraduite.addEventListener('pause', () => {
       if (!videoFr.paused) videoFr.pause();
     });
 
-    // Par défaut, seul "traduite" a le son
+    videoFr.addEventListener('pause', () => {
+      if (!videoTraduite.paused) videoTraduite.pause();
+    });
+
+    // Par défaut : la version traduite est audible, l'autre muette
     videoFr.muted = true;
     videoTraduite.muted = false;
   </script>

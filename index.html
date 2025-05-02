@@ -132,9 +132,8 @@
       if (!videoFr.paused) videoFr.pause();
     });
 
-    // La vidéo française ne doit pas arrêter la vidéo traduite si elle se termine ou est mise en pause
     videoFr.addEventListener("pause", () => {
-      // Pas de pause sur videoTraduite
+      if (!videoTraduite.paused) videoTraduite.pause();
     });
 
     // Ne pas relancer la vidéo française une fois terminée

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comparaison vidéos</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+    .video-container {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    video {
+      width: 45%;
+      height: auto;
+      border: 2px solid #ccc;
+    }
+    .controls {
+      text-align: center;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Comparaison vidéos – Français vs Traductions IA</h1>
+  <div class="video-container">
+    <video id="videoFr" src="video-fr.mp4" controls></video>
+    <video id="videoTrad" src="video-traduite.mp4" controls muted></video>
+  </div>
+
+  <div class="controls">
+    <button onclick="audioFr()">🔊 Activer audio français</button>
+    <button onclick="audioTrad()">🌍 Activer audio traduction</button>
+  </div>
+
+  <script>
+    const videoFr = document.getElementById('videoFr');
+    const videoTrad = document.getElementById('videoTrad');
+
+    // Synchroniser lecture/pause
+    function syncPlayPause(source, target) {
+      source.addEventListener('play', () => target.play());
+      source.addEventListener('pause', () => target.pause());
+      source.addEventListener('seeked', () => {
+        target.currentTime = source.currentTime;
+      });
+    }
+
+    syncPlayPause(videoFr, videoTrad);
+    syncPlayPause(videoTrad, videoFr);
+
+    // Audio toggle
+    function audioFr() {
+      videoFr.muted = false;
+      videoTrad.muted = true;
+    }
+
+    function audioTrad() {
+      videoFr.muted = true;
+      videoTrad.muted = false;
+    }
+  </script>
+</body>
+</html>

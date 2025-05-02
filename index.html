@@ -27,45 +27,32 @@
     .video-container {
       display: flex;
       justify-content: center;
-      gap: 40px;
+      gap: 20px;
       flex-wrap: wrap;
     }
 
     .video-block {
       position: relative;
-      background-color: #e0f0ff;
-      border: 3px solid #007bff;
       border-radius: 10px;
-      padding: 10px;
-    }
-
-    .video-block.traduite {
-      background-color: #e6ffea;
-      border-color: #28a745;
     }
 
     video {
-      width: 400px;
+      width: 100%;
+      max-width: 400px;
       height: auto;
       border-radius: 6px;
     }
 
-    .audio-button {
-      margin-top: 10px;
-      padding: 8px 14px;
-      font-size: 14px;
-      border: none;
+    .audio-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-size: 13px;
+      padding: 5px 10px;
       border-radius: 4px;
-      cursor: pointer;
-      color: white;
-    }
-
-    .btn-fr {
-      background-color: #007bff;
-    }
-
-    .btn-traduite {
-      background-color: #28a745;
+      pointer-events: none;
     }
 
     @media screen and (max-width: 900px) {
@@ -80,24 +67,24 @@
 
   <h1>Français traduit en 9 langues via l'IA</h1>
   <div class="description">
-    Cliquez sur un des boutons pour écouter l'une des versions. Les deux vidéos démarrent ensemble, mais une seule aura le son.
+    Cliquez sur l’une des vidéos pour activer le son. Les deux démarrent ensemble, mais une seule est audible.
   </div>
 
   <div class="video-container">
-    <div class="video-block traduite">
+    <div class="video-block">
+      <div class="audio-label">🌍 Traduit</div>
       <video id="videoTraduite" controls muted>
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
-      <button class="audio-button btn-traduite" onclick="playWithAudio('videoTraduite')">🌍 Écouter la version traduite</button>
     </div>
 
     <div class="video-block">
+      <div class="audio-label">🇫🇷 Français</div>
       <video id="videoFr" controls muted>
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
-      <button class="audio-button btn-fr" onclick="playWithAudio('videoFr')">🇫🇷 Écouter la version française</button>
     </div>
   </div>
 
@@ -105,16 +92,16 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    function playWithAudio(targetId) {
-      const target = document.getElementById(targetId);
-      const other = targetId === 'videoFr' ? videoTraduite : videoFr;
-
+    function synchronizeAudio(target, other) {
       target.muted = false;
       other.muted = true;
 
       target.play();
       other.play();
     }
+
+    videoFr.addEventListener('play', () => synchronizeAudio(videoFr, videoTraduite));
+    videoTraduite.addEventListener('play', () => synchronizeAudio(videoTraduite, videoFr));
 
     // Par défaut, seule la vidéo traduite est audible
     videoFr.muted = true;

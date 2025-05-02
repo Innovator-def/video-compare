@@ -83,7 +83,7 @@
   <div class="video-container">
     <div class="video-block">
       <div class="audio-label">🌍 Traduit</div>
-      <video id="videoTraduite" controls playsinline muted>
+      <video id="videoTraduite" controls playsinline muted preload="auto">
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -91,7 +91,7 @@
 
     <div class="video-block">
       <div class="audio-label">🇫🇷 Français</div>
-      <video id="videoFr" controls playsinline muted>
+      <video id="videoFr" controls playsinline muted preload="auto">
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -102,35 +102,29 @@
     const videoTraduite = document.getElementById('videoTraduite');
     const videoFr = document.getElementById('videoFr');
 
-    let activeVideo = null;
-
-    function syncPlayback(clicked, other) {
-      // Son sur la vidéo cliquée, silence sur l'autre
+    function launchBoth(clicked, other) {
+      // Son uniquement sur la vidéo cliquée
       clicked.muted = false;
       other.muted = true;
 
-      // Synchroniser le temps si écart > 0.1s
-      const delta = Math.abs(clicked.currentTime - other.currentTime);
-      if (delta > 0.1) {
-        other.currentTime = clicked.currentTime;
-      }
+      // Synchronisation : même currentTime
+      const time = clicked.currentTime;
+      other.currentTime = time;
 
-      // Lancer les deux vidéos si ce n’est pas déjà fait
-      if (clicked.paused) clicked.play();
-      if (other.paused) other.play();
-
-      activeVideo = clicked;
+      // Lecture simultanée
+      clicked.play();
+      other.play();
     }
 
     videoTraduite.addEventListener('play', () => {
-      if (activeVideo !== videoTraduite) {
-        syncPlayback(videoTraduite, videoFr);
+      if (videoFr.paused) {
+        launchBoth(videoTraduite, videoFr);
       }
     });
 
     videoFr.addEventListener('play', () => {
-      if (activeVideo !== videoFr) {
-        syncPlayback(videoFr, videoTraduite);
+      if (videoTraduite.paused) {
+        launchBoth(videoFr, videoTraduite);
       }
     });
 
@@ -143,6 +137,10 @@
       if (!videoTraduite.paused) videoTraduite.pause();
     });
 
-    // Initial: seule la vidéo traduite est audible
+    // État initial : seule la vidéo traduite est audible
     videoFr.muted = true;
-    vide
+    videoTraduite.muted = false;
+  </script>
+
+</body>
+</html>

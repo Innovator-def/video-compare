@@ -136,6 +136,25 @@
       if (!videoTraduite.paused) videoTraduite.pause();
     });
 
+    // Ne pas relancer la vidéo française une fois terminée
+    videoFr.addEventListener("ended", () => {
+      // Elle reste arrêtée
+    });
+
+    // Forcer le son unique même si l'utilisateur tente de réactiver l'autre piste
+    videoFr.addEventListener("volumechange", () => {
+      if (!videoTraduite.muted) {
+        videoFr.muted = true;
+      }
+    });
+
+    videoTraduite.addEventListener("volumechange", () => {
+      if (!videoFr.muted) {
+        videoTraduite.muted = true;
+      }
+    });
+
+    // État initial
     videoFr.muted = true;
     videoTraduite.muted = false;
   </script>

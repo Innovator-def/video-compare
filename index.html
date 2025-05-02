@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Français traduit en 9 langues via l'IA</title>
   <style>
     body {
@@ -28,17 +29,17 @@
       display: flex;
       justify-content: center;
       gap: 20px;
-      flex-wrap: wrap;
     }
 
     .video-block {
       position: relative;
+      width: 100%;
       max-width: 400px;
-      flex: 1 1 400px;
     }
 
     video {
       width: 100%;
+      height: auto;
       border-radius: 6px;
     }
 
@@ -60,22 +61,10 @@
       .video-container {
         flex-direction: column;
         align-items: center;
-        width: 100%;
       }
 
       .video-block {
-        width: 95vw;
         max-width: 95vw;
-      }
-
-      video {
-        width: 100%;
-        height: auto;
-      }
-
-      .audio-label {
-        font-size: 12px;
-        padding: 4px 8px;
       }
     }
   </style>
@@ -110,15 +99,12 @@
     const videoFr = document.getElementById('videoFr');
 
     function launchBoth(clicked, other) {
-      // Son uniquement sur la vidéo cliquée
       clicked.muted = false;
       other.muted = true;
 
-      // Synchroniser le temps
       const time = clicked.currentTime;
       other.currentTime = time;
 
-      // Lecture simultanée
       clicked.play();
       other.play();
     }
@@ -135,7 +121,6 @@
       }
     });
 
-    // Pause synchronisée
     videoTraduite.addEventListener('pause', () => {
       if (!videoFr.paused) videoFr.pause();
     });
@@ -144,7 +129,6 @@
       if (!videoTraduite.paused) videoTraduite.pause();
     });
 
-    // État initial : seule la vidéo traduite est audible
     videoFr.muted = true;
     videoTraduite.muted = false;
   </script>

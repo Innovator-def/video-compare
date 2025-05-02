@@ -33,26 +33,29 @@
 
     .video-block {
       position: relative;
-      border-radius: 10px;
+      max-width: 400px;
     }
 
     video {
       width: 100%;
-      max-width: 400px;
-      height: auto;
       border-radius: 6px;
     }
 
-    .audio-label {
+    .audio-button {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      background-color: rgba(0, 0, 0, 0.7);
-      color: #fff;
+      top: 10px;
+      left: 10px;
+      padding: 6px 10px;
       font-size: 13px;
-      padding: 5px 10px;
+      border: 1px solid #fff;
+      background-color: rgba(0,0,0,0.6);
+      color: #fff;
       border-radius: 4px;
-      pointer-events: none;
+      cursor: pointer;
+    }
+
+    .audio-button:hover {
+      background-color: rgba(0,0,0,0.8);
     }
 
     @media screen and (max-width: 900px) {
@@ -67,21 +70,21 @@
 
   <h1>Français traduit en 9 langues via l'IA</h1>
   <div class="description">
-    Cliquez sur l’une des vidéos pour activer le son. Les deux démarrent ensemble, mais une seule est audible.
+    Cliquez sur un bouton pour écouter une version. Les deux vidéos sont synchronisées, une seule aura le son.
   </div>
 
   <div class="video-container">
     <div class="video-block">
-      <div class="audio-label">🌍 Traduit</div>
-      <video id="videoTraduite" controls muted>
+      <button class="audio-button" onclick="togglePlayback('videoTraduite')">🌍 Traduit</button>
+      <video id="videoTraduite" muted>
         <source src="video-traduite.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
     </div>
 
     <div class="video-block">
-      <div class="audio-label">🇫🇷 Français</div>
-      <video id="videoFr" controls muted>
+      <button class="audio-button" onclick="togglePlayback('videoFr')">🇫🇷 Français</button>
+      <video id="videoFr" muted>
         <source src="video-fr.mp4" type="video/mp4">
         Votre navigateur ne supporte pas la vidéo.
       </video>
@@ -92,20 +95,30 @@
     const videoFr = document.getElementById('videoFr');
     const videoTraduite = document.getElementById('videoTraduite');
 
-    function synchronizeAudio(target, other) {
-      target.muted = false;
-      other.muted = true;
+    let playing = null; // peut valoir 'videoFr', 'videoTraduite' ou null
 
-      target.play();
-      other.play();
+    function togglePlayback(targetId) {
+      const target = document.getElementById(targetId);
+      const other = targetId === 'videoFr' ? videoTraduite : videoFr;
+
+      if (playing === targetId) {
+        // stop both
+        target.pause();
+        other.pause();
+        target.currentTime = 0;
+        other.currentTime = 0;
+        target.muted = true;
+        other.muted = true;
+        playing = null;
+      } else {
+        // launch both
+        target.muted = false;
+        other.muted = true;
+        target.play();
+        other.play();
+        playing = targetId;
+      }
     }
-
-    videoFr.addEventListener('play', () => synchronizeAudio(videoFr, videoTraduite));
-    videoTraduite.addEventListener('play', () => synchronizeAudio(videoTraduite, videoFr));
-
-    // Par défaut, seule la vidéo traduite est audible
-    videoFr.muted = true;
-    videoTraduite.muted = false;
   </script>
 
 </body>

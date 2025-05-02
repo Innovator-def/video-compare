@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Français traduit en 9 langues via l'IA</title>
   <style>
     body {
@@ -50,7 +50,7 @@
       padding: 6px 10px;
       font-size: 13px;
       border: 1px solid #fff;
-      background-color: rgba(0,0,0,0.6);
+      background-color: rgba(0, 0, 0, 0.6);
       color: #fff;
       border-radius: 4px;
       pointer-events: none;
@@ -66,6 +66,11 @@
       .video-block {
         max-width: 95vw;
       }
+
+      .audio-label {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
     }
   </style>
 </head>
@@ -80,7 +85,7 @@
     <div class="video-block">
       <div class="audio-label">🌍 Traduit</div>
       <video id="videoTraduite" controls playsinline muted preload="auto">
-        <source src="video-traduite.mp4" type="video/mp4">
+        <source src="video-traduite.mp4" type="video/mp4" />
         Votre navigateur ne supporte pas la vidéo.
       </video>
     </div>
@@ -88,15 +93,15 @@
     <div class="video-block">
       <div class="audio-label">🇫🇷 Français</div>
       <video id="videoFr" controls playsinline muted preload="auto">
-        <source src="video-fr.mp4" type="video/mp4">
+        <source src="video-fr.mp4" type="video/mp4" />
         Votre navigateur ne supporte pas la vidéo.
       </video>
     </div>
   </div>
 
   <script>
-    const videoTraduite = document.getElementById('videoTraduite');
-    const videoFr = document.getElementById('videoFr');
+    const videoTraduite = document.getElementById("videoTraduite");
+    const videoFr = document.getElementById("videoFr");
 
     function launchBoth(clicked, other) {
       clicked.muted = false;
@@ -109,23 +114,23 @@
       other.play();
     }
 
-    videoTraduite.addEventListener('play', () => {
+    videoTraduite.addEventListener("play", () => {
       if (videoFr.paused) {
         launchBoth(videoTraduite, videoFr);
       }
     });
 
-    videoFr.addEventListener('play', () => {
+    videoFr.addEventListener("play", () => {
       if (videoTraduite.paused) {
         launchBoth(videoFr, videoTraduite);
       }
     });
 
-    videoTraduite.addEventListener('pause', () => {
+    videoTraduite.addEventListener("pause", () => {
       if (!videoFr.paused) videoFr.pause();
     });
 
-    videoFr.addEventListener('pause', () => {
+    videoFr.addEventListener("pause", () => {
       if (!videoTraduite.paused) videoTraduite.pause();
     });
 
